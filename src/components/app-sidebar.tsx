@@ -1,4 +1,6 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Calendar, Home, Inbox, PlusCircle, Search, Settings, Loader2 } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 import {
   Sidebar,
@@ -10,6 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Suspense } from "react"
+import ChatList from "./chat-list"
 
 // Menu items.
 const items = [
@@ -40,24 +44,33 @@ const items = [
   },
 ]
 
+function Loading() {
+  return (
+    <div className="flex items-center justify-center p-4">
+      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+    </div>
+  )
+}
+
 export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Chatapp</SidebarGroupLabel>
           <SidebarGroupContent>
+            <div className="p-2">
+              <Button asChild className="w-full justify-start gap-2">
+                <Link href="/">
+                  <PlusCircle className="h-4 w-4" />
+                  New Chat
+                </Link>
+              </Button>
+            </div>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <Suspense fallback={<Loading />}>
+                <ChatList />
+              </Suspense>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

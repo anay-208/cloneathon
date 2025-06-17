@@ -3,41 +3,36 @@
 import { useChat } from "@ai-sdk/react";
 import Message from "@/components/chat/message";
 import ChatInput from "@/components/chat/input";
-import { createChat, addMessageToChat, getChat } from "@/lib/actions/chat";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Chat as ChatType } from "@prisma/client";
 
-export default function ChatPage() {
-  const params = useParams();
-  const router = useRouter();
-  const chatId = params?.chatId as string;
-  const [chatTitle, setChatTitle] = useState<string>("");
-  
-  useEffect(() => {
-    if (chatId) {
-      getChat(chatId).then(({ chat }) => {
-        if (chat) {
-          setChatTitle(chat.title);
-        }
-      });
-    }
-  }, [chatId]);
+interface Props {
+  initialChat: ChatType & {
+    messages: {
+      id: string;
+      content: string;
+      role: string;
+      createdAt: Date;
+    }[];
+  };
+}
 
+export default function Chat({ initialChat }: Props) {
   const { messages, input, handleInputChange, handleSubmit, error, reload, isLoading } = useChat({
     api: "/api/chat",
-    id: chatId,
-    onFinish: async (message) => {
-        router.push(`/chat/${chatId}`);
-    }
+    id: initialChat.id,
+    initialMessages: initialChat.messages.map(msg => ({
+      id: msg.id,
+      content: msg.content,
+      role: msg.role as "user" | "assistant",
+      createdAt: msg.createdAt,
+    })),
   });
 
   return (
     <div className="flex flex-col h-screen">
-      {chatTitle && (
-        <div className="p-4 border-b">
-          <h1 className="text-lg font-semibold">{chatTitle}</h1>
-        </div>
-      )}
+      <div className="p-4 border-b">
+        <h1 className="text-lg font-semibold">{initialChat.title}</h1>
+      </div>
       <div className="flex-1 overflow-y-auto p-4">
         {error && (
           <div className="text-red-500 text-center mb-4">
@@ -64,4 +59,4 @@ export default function ChatPage() {
       </div>
     </div>
   );
-}
+} 
