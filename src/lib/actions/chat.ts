@@ -1,5 +1,3 @@
-'use server'
-
 import prisma from "@/lib/db";
 import { Message } from "@ai-sdk/react";
 import { revalidatePath } from "next/cache";
@@ -20,7 +18,7 @@ ${messages.map(m => `${m.role}: ${m.content}`).join('\n')}`;
     return result.text.trim();
 }
 
-export async function createChat(firstMessage: Message, chatId: string) {
+export async function createChat(firstMessage: Message, chatId: string, userId: string) {
     try {
         // Generate initial title using AI
         const title = await generateChatTitle([{ role: firstMessage.role, content: firstMessage.content }]);
@@ -29,10 +27,13 @@ export async function createChat(firstMessage: Message, chatId: string) {
             data: {
                 id: chatId,
                 title,
+                userId,
                 messages: {
                     create: {
+                        id: firstMessage.id,
                         content: firstMessage.content,
                         role: firstMessage.role,
+                        createdAt: firstMessage.createdAt
                     }
                 }
             },
@@ -85,10 +86,30 @@ export async function getChat(id: string) {
     try {
         const chat = await prisma.chat.findUnique({
             where: { id },
-            include: { messages: true }
+            include: {
+                messages: {
+                    orderBy: {
+                        "createdAt": "asc"
+                    }
+                }
+            }
         });
         return { chat, error: null };
     } catch (error) {
         return { chat: null, error };
     }
 } 
+
+export async function listChats(userId: string){
+    try {
+        const chats = await prisma.chat.findMany({
+            where: { userId },
+            orderBy: {
+                createdAt: "desc"
+            }
+        });
+        return { chats, error: null };
+    } catch (error) {
+        return { chats: null, error };
+    }
+}

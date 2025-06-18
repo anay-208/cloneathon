@@ -15,7 +15,7 @@ interface ChatInputProps {
 export default function ChatInput({ input, handleInputChange, handleSubmit, isLoading }: ChatInputProps) {
     return (
         <form onSubmit={handleSubmit} className="relative">
-            <Textarea
+                    <Textarea
                 value={input}
                 onChange={handleInputChange}
                 placeholder="Type a message..."
@@ -26,15 +26,15 @@ export default function ChatInput({ input, handleInputChange, handleSubmit, isLo
                         handleSubmit(e as any);
                     }
                 }}
-            />
-            <Button
+                    />
+                    <Button
                 type="submit"
                 size="icon"
                 disabled={isLoading || !input.trim()}
                 className="absolute right-2 bottom-2 h-8 w-8 bg-secondary hover:bg-secondary/80"
-            >
+                    >
                 <SendHorizontal className="h-4 w-4 text-white" />
-            </Button>
+                    </Button>
         </form>
     );
 }

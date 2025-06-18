@@ -1,5 +1,6 @@
 import { getChat } from "@/lib/actions/chat";
 import Chat from "./chat";
+import ChatMessages from "@/components/chat/main";
 
 interface Props {
   params: Promise<{ chatId: string }>;
@@ -14,8 +15,8 @@ export default async function ChatPage({ params }: Props) {
       <div className="flex items-center justify-center h-screen">
         <p className="text-red-500">Failed to load chat</p>
       </div>
-    );
+    ); 
   }
-
-  return <Chat initialChat={chat} />;
+  // @ts-expect-error some random prisma bug
+  return <ChatMessages initialMessages={chat.messages} chatId={chatId} />;
 } 

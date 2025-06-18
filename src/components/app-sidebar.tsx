@@ -14,35 +14,11 @@ import {
 } from "@/components/ui/sidebar"
 import { Suspense } from "react"
 import ChatList from "./chat-list"
+import AuthButtons from "./auth-buttons"
+import { headers } from "next/headers"
+import { auth } from "@/lib/auth"
 
 // Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-]
 
 function Loading() {
   return (
@@ -52,7 +28,9 @@ function Loading() {
   )
 }
 
-export function AppSidebar() {
+export async function AppSidebar() {
+  const session = headers().then(headerList => auth.api.getSession({headers: headerList}))
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -69,11 +47,16 @@ export function AppSidebar() {
             </div>
             <SidebarMenu>
               <Suspense fallback={<Loading />}>
-                <ChatList />
+                <ChatList session={session} />
               </Suspense>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        
+        {/* Auth buttons at the bottom */}
+        <Suspense>
+          <AuthButtons session={session} />
+        </Suspense>
       </SidebarContent>
     </Sidebar>
   )
