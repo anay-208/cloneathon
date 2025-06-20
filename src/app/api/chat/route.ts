@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     // Stream the response from Gemini
     const result = await streamText({
       model: google('gemini-1.5-flash'),
-      prompt: lastMessage.content,
+      messages: messages,
       onFinish: async ({ response }) => {
         if (id) {
           try {

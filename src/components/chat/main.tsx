@@ -51,26 +51,28 @@ export default function ChatMessages({initialMessages, chatId}: Props) {
               exit={{ opacity: 0, y: -10 }}
               className="flex w-full mb-4 justify-start"
             >
-              <div className="max-w-md p-3 rounded-lg shadow-md bg-card text-card-foreground">
-                <div className="flex items-center space-x-2">
-                  <div className="flex space-x-1">
-                    <motion.div
-                      className="w-2 h-2 bg-gray-400 rounded-full"
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                    />
-                    <motion.div
-                      className="w-2 h-2 bg-gray-400 rounded-full"
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                    />
-                    <motion.div
-                      className="w-2 h-2 bg-gray-400 rounded-full"
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                    />
+              <div className="w-11/12 mx-auto">
+                <div className="w-auto p-3 rounded-lg shadow-md bg-card text-card-foreground">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex space-x-1">
+                      <motion.div
+                        className="w-2 h-2 bg-gray-400 rounded-full"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                      />
+                      <motion.div
+                        className="w-2 h-2 bg-gray-400 rounded-full"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                      />
+                      <motion.div
+                        className="w-2 h-2 bg-gray-400 rounded-full"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                      />
+                    </div>
+                    <span className="text-sm text-gray-500">AI is thinking...</span>
                   </div>
-                  <span className="text-sm text-gray-500">AI is thinking...</span>
                 </div>
               </div>
             </motion.div>
