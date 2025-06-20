@@ -23,6 +23,7 @@ import {
   DialogTitle,
 } from "./ui/dialog"
 import { cn } from "@/lib/utils"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export default function ChatListClient({chats}: {chats: Chat[]}){
     const [chatsState, setChatsState] = useState<Chat[]>(chats)
@@ -151,8 +152,8 @@ export default function ChatListClient({chats}: {chats: Chat[]}){
                     <SidebarMenuItem>
                         <motion.div 
                             className={cn(
-                                "flex items-center w-full group",
-                                pathname === `/chat/${chat.id}` && "bg-muted/50 rounded-md"
+                                "flex items-center w-full group font-sans text-sm py-2",
+                                pathname === `/chat/${chat.id}` && "bg-muted/50 rounded-md border-l-4 border-blue-500"
                             )}
                             animate={pathname === `/chat/${chat.id}` ? {
                                 scale: 1.02
@@ -164,100 +165,112 @@ export default function ChatListClient({chats}: {chats: Chat[]}){
                                 ease: "easeInOut"
                             }}
                         >
-                            <SidebarMenuButton asChild className="flex-1">
-                                <Link href={`/chat/${chat.id}`}>
-                                    <motion.span
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: 0.2 + index * 0.1 }}
-                                    >
-                                        {editingId === chat.id ? (
-                                            <input
-                                                type="text"
-                                                value={editTitle}
-                                                onChange={(e) => setEditTitle(e.target.value)}
-                                                className="bg-transparent border-none outline-none w-full"
-                                                autoFocus
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') handleEdit(chat.id);
-                                                    if (e.key === 'Escape') {
-                                                        setEditingId(null);
-                                                        setEditTitle("");
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            chat.title
-                                        )}
-                                    </motion.span>
-                                </Link>
+                            {/* Removed Icon */}
+                            <SidebarMenuButton asChild className="flex-1 text-left">
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Link href={`/chat/${chat.id}`} className="truncate block max-w-[180px] ml-2">
+                                                <motion.span
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: 0.2 + index * 0.1 }}
+                                                >
+                                                    {editingId === chat.id ? (
+                                                        <input
+                                                            type="text"
+                                                            value={editTitle}
+                                                            onChange={(e) => setEditTitle(e.target.value)}
+                                                            className="bg-transparent border-none outline-none w-full"
+                                                            autoFocus
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') handleEdit(chat.id);
+                                                                if (e.key === 'Escape') {
+                                                                    setEditingId(null);
+                                                                    setEditTitle("");
+                                                                }
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        chat.title
+                                                    )}
+                                                </motion.span>
+                                            </Link>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right">
+                                            <span className="text-xs">{chat.title}</span>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </SidebarMenuButton>
                             
                             {/* Action buttons */}
-                            <AnimatePresence>
-                                {editingId === chat.id ? (
-                                    <motion.div
-                                        key="edit-buttons"
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        className="flex gap-1 mr-2"
-                                    >
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={() => handleEdit(chat.id)}
-                                            className="h-6 w-6 p-0"
+                            <div className="flex items-center ml-auto">
+                                <AnimatePresence>
+                                    {editingId === chat.id ? (
+                                        <motion.div
+                                            key="edit-buttons"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            className="flex gap-1 mr-2"
                                         >
-                                            <Check className="h-3 w-3" />
-                                        </Button>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={() => {
-                                                setEditingId(null);
-                                                setEditTitle("");
-                                            }}
-                                            className="h-6 w-6 p-0"
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={() => handleEdit(chat.id)}
+                                                className="h-6 w-6 p-0"
+                                            >
+                                                <Check className="h-3 w-3" />
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={() => {
+                                                    setEditingId(null);
+                                                    setEditTitle("");
+                                                }}
+                                                className="h-6 w-6 p-0"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </Button>
+                                        </motion.div>
+                                    ) : (
+                                        <motion.div
+                                            key="dropdown"
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                            className="opacity-0 group-hover:opacity-100 transition-opacity mr-2"
                                         >
-                                            <X className="h-3 w-3" />
-                                        </Button>
-                                    </motion.div>
-                                ) : (
-                                    <motion.div
-                                        key="dropdown"
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        className="opacity-0 group-hover:opacity-100 transition-opacity mr-2"
-                                    >
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    className="h-6 w-6 p-0"
-                                                >
-                                                    <MoreHorizontal className="h-3 w-3" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="w-48">
-                                                <DropdownMenuItem onClick={() => startEdit(chat)}>
-                                                    <Edit2 className="h-4 w-4 mr-2" />
-                                                    Edit title
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem 
-                                                    onClick={() => confirmDelete(chat.id)}
-                                                    className="text-red-600 focus:text-red-600"
-                                                >
-                                                    <Trash2 className="h-4 w-4 mr-2" />
-                                                    Delete chat
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        className="h-6 w-6 p-0"
+                                                    >
+                                                        <MoreHorizontal className="h-3 w-3" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end" className="w-48">
+                                                    <DropdownMenuItem onClick={() => startEdit(chat)}>
+                                                        <Edit2 className="h-4 w-4 mr-2" />
+                                                        Edit title
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem 
+                                                        onClick={() => confirmDelete(chat.id)}
+                                                        className="text-red-600 focus:text-red-600"
+                                                    >
+                                                        <Trash2 className="h-4 w-4 mr-2" />
+                                                        Delete chat
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
                         </motion.div>
                     </SidebarMenuItem>
                 </motion.div>

@@ -38,9 +38,11 @@ export default function ChatMessages({initialMessages, chatId}: Props) {
             </button>
           </div>
         )}
+        <div className="space-y-4">
         {messages.map((message, i) => (
           <ChatMessage key={i} message={message} />
         ))}
+        </div>
         
         {/* Generating animation - show when submitted, hide when streaming */}
         <AnimatePresence>

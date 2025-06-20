@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { User2 } from "lucide-react";
 
 interface Props {
     message: MessageProps;
@@ -36,16 +37,25 @@ export default function Message({ message }: Props) {
     return (
         <TooltipProvider>
             <div className={cn(
-                "flex w-full mb-4",
+                "flex w-full mb-4 items-end",
                 isUser ? "justify-end" : "justify-start"
             )}>
+                {/* Avatar */}
+                {!isUser && (
+                    <div className="flex flex-col items-center mr-2">
+                        <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-lg font-bold text-white select-none">
+                            <span role="img" aria-label="Bot">🤖</span>
+                        </div>
+                    </div>
+                )}
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <div className={cn(
+                            "relative max-w-[80%] py-2 px-4 font-sans text-[15px] leading-relaxed",
                             isUser
-                                ? "max-w-md p-3 rounded-lg shadow-md cursor-default bg-secondary text-secondary-foreground"
-                                : "w-11/12 mx-auto p-3 rounded-lg shadow-md cursor-default bg-card text-card-foreground"
-                        )}>
+                                ? "bg-[#1E1E1E] text-white rounded-2xl rounded-br-sm ml-auto shadow-md"
+                                : "bg-[#2A2A2A] text-white rounded-2xl rounded-bl-sm mr-auto shadow-md"
+                        )} style={{ fontFamily: 'Inter, sans-serif' }}>
                             <div className="prose prose-sm max-w-none dark:prose-invert text-foreground [&_pre]:!bg-transparent [&_pre]:!p-0 [&_pre]:!m-0 [&_strong]:text-foreground [&_b]:text-foreground [&_code]:!bg-zinc-800 [&_code]:!text-foreground">
                                 <ReactMarkdown 
                                     remarkPlugins={[remarkGfm]}
@@ -53,14 +63,14 @@ export default function Message({ message }: Props) {
                                         // Custom styling for headings
                                         h1({ children, ...props }) {
                                             return (
-                                                <h1 className="text-foreground text-xl font-bold mb-2" {...props}>
+                                                <h1 className="text-foreground text-xl font-bold " {...props}>
                                                     {children}
                                                 </h1>
                                             );
                                         },
                                         h2({ children, ...props }) {
                                             return (
-                                                <h2 className="text-foreground text-lg font-bold mb-2" {...props}>
+                                                <h2 className="text-foreground text-lg font-bold " {...props}>
                                                     {children}
                                                 </h2>
                                             );
@@ -202,7 +212,7 @@ export default function Message({ message }: Props) {
                                         // Custom styling for paragraphs
                                         p({ children, ...props }) {
                                             return (
-                                                <p className="text-foreground mb-2" {...props}>
+                                                <p className="text-foreground " {...props}>
                                                     {children}
                                                 </p>
                                             );
@@ -220,7 +230,24 @@ export default function Message({ message }: Props) {
                         </TooltipContent>
                     )}
                 </Tooltip>
+                {/* User avatar */}
+                {isUser && (
+                    <div className="flex flex-col items-center ml-2">
+                        <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-lg font-bold text-white select-none">
+                            <span role="img" aria-label="User">🧑</span>
+                        </div>
+                    </div>
+                )}
             </div>
+            {/* Timestamp below bubble */}
+            {date && (
+                <div className={cn(
+                    "w-full text-xs text-zinc-400 mt-[-10px] ",
+                    isUser ? "text-right pr-12" : "text-left pl-12"
+                )}>
+                    {formatDateTime(date)}
+                </div>
+            )}
         </TooltipProvider>
     );
 }
